@@ -1,5 +1,7 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Loader from '../common/Loader'
 import Header from '../components/Header'
 import Feed from '../pages/Feed'
 import Login from '../pages/Login'
@@ -8,10 +10,12 @@ import Register from '../pages/Register'
 import Users from '../pages/User'
 
 const AppRoute = () => {
+    const isVisible = useSelector(state => state.loader.isVisible)
     return (
         <>
             <BrowserRouter>
                 <Header />
+                {isVisible && <Loader />}
                 <Routes>
                     <Route path='/' />
                         <Route index element={<Login />} />

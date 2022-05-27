@@ -10,6 +10,9 @@ import { Box, Typography, Button, Modal, TextField, InputBase } from "@mui/mater
 // import { useDispatch } from 'react-redux'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import { useSavePostMutation } from '../app/reducers/feed.ts';
+import { LoaderVisibility } from '../app/slices/loaderSlice';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -38,7 +41,7 @@ export default function WriteModal(props) {
 
     // const dispatch = useDispatch();
 
-    // const [bookSlot, { isLoading, isError, isSuccess, ...data }] = useBookParkingMutation();
+    const [postFeed, { isLoading, isError, isSuccess, ...data }] = useSavePostMutation();
 
     const handleOpen = () => {
         setOpen(true);
@@ -49,12 +52,37 @@ export default function WriteModal(props) {
     };
 
     const [post, setPost] = useState('');
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // console.log(data)
+        if(isLoading)
+        {
+            dispatch(LoaderVisibility(true))
+        }
+        else if(isError)
+        {
+            dispatch(LoaderVisibility(false))
+        }
+        else if(isSuccess)
+        {
+            if(data.data.success)
+            {
+                dispatch(LoaderVisibility(false))
+            }
+            else {
+                dispatch(LoaderVisibility(false))
+            }
+        }
+    }, [data])
 
     const handleSubmit = () => {
         if (post) {
             const postData = {
-                post: post,
+                desc: post,
             }
+
+            postFeed(postData);
 
             setOpen(false);
 

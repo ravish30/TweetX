@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material'
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { useSignInUserMutation } from '../app/reducers/auth';
+import { LoginUser } from '../app/slices/authSlice';
+import { LoaderVisibility } from '../app/slices/loaderSlice';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,17 +83,57 @@ const validationSchema = yup.object({
 function Login() {
     const classes = useStyles();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const [loginUser, { isLoading, isError, isSuccess, ...data }] = useSignInUserMutation();
+
+    useEffect(() => {
+        // console.log(data)
+        if(isLoading)
+        {
+            dispatch(LoaderVisibility(true))
+        }
+        else if(isError)
+        {
+            dispatch(LoaderVisibility(false))
+            toast.error(data.error.error, {
+                position: 'top-center',
+                autoClose: 2000
+            })
+        }
+        else if(isSuccess)
+        {
+            // console.log(data);
+            if(data.data.success)
+            {
+                toast.success(data.data.message, {
+                    position: 'top-center',
+                    autoClose: 2000
+                });
+                dispatch(LoaderVisibility(false))
+                dispatch(LoginUser(data.data.token));
+                localStorage.setItem('isAuth', true)
+                localStorage.setItem('token', data.data.token)
+                navigate('/feed')
+            }
+            else {
+                toast.warning(data.data.message, {
+                    position: 'top-center',
+                    autoClose: 2000
+                });
+                dispatch(LoaderVisibility(false))
+            }
+        }
+    }, [data])
+
     const formik = useFormik({
         initialValues: {
             email: "",
             password: ""
         },
         validationSchema: validationSchema,
-        onSubmit: (data, { resetForm }) => {
-            console.log(data);
-            localStorage.setItem('role', 'student')
-            localStorage.setItem('isauth', true)
-            navigate('/tutor-list')
+        onSubmit: (userData, { resetForm }) => {
+            loginUser(userData)
             resetForm({});
         }
     })

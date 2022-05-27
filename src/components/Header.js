@@ -3,6 +3,8 @@ import { makeStyles } from '@mui/styles'
 import { AppBar, Toolbar, Typography, Box, Container, Button, IconButton, Drawer, List, ListItem, ListItemText, ListItemIcon } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { LogoutUser } from '../app/slices/authSlice';
 
 const useStyles = makeStyles((theme) => ({
     appbar: {
@@ -68,13 +70,16 @@ const useStyles = makeStyles((theme) => ({
 
 function Header() {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const isAuth = useSelector(state => state.auth.isAuth)
 
     const logoutHandler = (e) => {
         e.preventDefault();
         setOpen(false)
         localStorage.clear();
+        dispatch(LogoutUser());
         navigate('/')
     }
 
@@ -106,34 +111,36 @@ function Header() {
                     </ListItem>
                 </List>
             </Drawer>
-            <AppBar className={classes.appbar}>
-                <Toolbar className={classes.toolbar}>
-                    <Container className={classes.nav}>
-                        <Box display="flex" alignItems="center" style={{ cursor: 'pointer' }}>
-                            <Typography variant="h6" color="secondary" style={{ marginLeft: 20, fontWeight: 'bolder' }}>
-                                TweetX
-                            </Typography>
-                        </Box>
-                        <Box className={classes.mainNav}>
-                            <Box display="flex" alignItems="center">
-                                <NavLink to="/feed" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
-                                    <Typography sx={{ fontWeight: 'bolder' }}>Feed</Typography>
-                                </NavLink>
-                                <NavLink to="/users" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
-                                    <Typography sx={{ fontWeight: 'bolder' }}>Users</Typography>
-                                </NavLink>
-                                <NavLink to="/profile" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
-                                    <Typography sx={{ fontWeight: 'bolder' }}>Profile</Typography>
-                                </NavLink>
-                                <Button color="secondary" variant="outlined" sx={{ marginLeft: "25px" }} onClick={logoutHandler}>Logout</Button>
+            {isAuth && (
+                <AppBar className={classes.appbar}>
+                    <Toolbar className={classes.toolbar}>
+                        <Container className={classes.nav}>
+                            <Box display="flex" alignItems="center" style={{ cursor: 'pointer' }}>
+                                <Typography variant="h6" color="secondary" style={{ marginLeft: 20, fontWeight: 'bolder' }}>
+                                    TweetX
+                                </Typography>
                             </Box>
-                        </Box>
-                        <IconButton className={classes.iconButton} onClick={() => setOpen(!open)}>
-                            <MenuIcon color="primary" />
-                        </IconButton>
-                    </Container>
-                </Toolbar>
-            </AppBar>
+                            <Box className={classes.mainNav}>
+                                <Box display="flex" alignItems="center">
+                                    <NavLink to="/feed" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
+                                        <Typography sx={{ fontWeight: 'bolder' }}>Feed</Typography>
+                                    </NavLink>
+                                    <NavLink to="/users" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
+                                        <Typography sx={{ fontWeight: 'bolder' }}>Users</Typography>
+                                    </NavLink>
+                                    <NavLink to="/profile" className={(navigationData) => navigationData.isActive ? classes.activeLink : classes.notActiveLink}>
+                                        <Typography sx={{ fontWeight: 'bolder' }}>Profile</Typography>
+                                    </NavLink>
+                                    <Button color="secondary" variant="outlined" sx={{ marginLeft: "25px" }} onClick={logoutHandler}>Logout</Button>
+                                </Box>
+                            </Box>
+                            <IconButton className={classes.iconButton} onClick={() => setOpen(!open)}>
+                                <MenuIcon color="primary" />
+                            </IconButton>
+                        </Container>
+                    </Toolbar>
+                </AppBar>
+            )}
         </Container>
     )
 }

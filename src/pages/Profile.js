@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
 import { styled } from '@mui/system';
@@ -11,6 +11,11 @@ import Posts from '../components/Tabs/Posts';
 import Followers from '../components/Tabs/Followers';
 import Following from '../components/Tabs/Following';
 import { makeStyles } from '@mui/styles'
+import { LoaderVisibility } from '../app/slices/loaderSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import { useGetMyPostsQuery } from '../app/reducers/profile.ts';
+import { saveMyPosts, saveUser } from '../app/slices/profileSlice';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,7 +35,7 @@ const Tab = styled(TabUnstyled)`
   font-size: 0.875rem;
   font-weight: light;
   background-color: transparent;
-  width: 150px;
+  width: 100px;
   padding: 12px 0px;
   margin: 15px 20px;
   border: none;
@@ -67,6 +72,37 @@ const TabsList = styled(TabsListUnstyled)`
 
 const Profile = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+
+    const user = useSelector(state => state.profile.user)
+    const posts = useSelector(state => state.profile.myPosts)
+
+
+    const { data, isLoading, isError, isSuccess } = useGetMyPostsQuery()
+
+
+    useEffect(() => {
+        // console.log(data)
+        if (isLoading) {
+            dispatch(LoaderVisibility(true))
+        }
+        else if (isError) {
+            dispatch(LoaderVisibility(false))
+        }
+        else if (isSuccess) {
+            console.log(data);
+            if (data.success) {
+                dispatch(LoaderVisibility(false))
+                dispatch(saveMyPosts(data.posts));
+                dispatch(saveUser(data.user));
+
+            }
+            else {
+                dispatch(LoaderVisibility(false))
+            }
+        }
+    }, [data])
+
     return (
         <>
             <Box className={classes.root}>
@@ -78,11 +114,11 @@ const Profile = () => {
                         <Grid item lg={10} md={10}>
                             <Box sx={{ marginTop: "30px" }}>
                                 <Box sx={{ marginLeft: "40px" }}>
-                                    <Typography color="primary" variant='div' sx={{ fontSize: "20px" }}>Arjun Reddy</Typography>
+                                    <Typography color="primary" variant='div' sx={{ fontSize: "20px" }}>{user && user.name}</Typography>
                                     <Box display="flex" gap="20px" sx={{ marginTop: "20px" }}>
-                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Posts : 511</Typography>
-                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Followers : 511</Typography>
-                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Following : 511</Typography>
+                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Posts : {posts && posts.length}</Typography>
+                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Followers : {user && user.followers? user.followers.length : 0}</Typography>
+                                        <Typography variant='div' sx={{ fontSize: '14px', color: "rgba(0,0,0, 0.4)" }}>Following : {user && user.following? user.following.length : 0}</Typography>
 
                                     </Box>
                                 </Box>

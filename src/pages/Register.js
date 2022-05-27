@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material'
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-dom'
+import { useSignUpUserMutation } from '../app/reducers/auth';
+import { LoaderVisibility } from '../app/slices/loaderSlice';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -84,18 +88,54 @@ const validationSchema = yup.object({
 
 function Register() {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [registerUser, { isLoading, isError, isSuccess, ...data }] = useSignUpUserMutation();
+
+    useEffect(() => {
+        // console.log(data)
+        if (isLoading) {
+            dispatch(LoaderVisibility(true))
+        }
+        else if (isError) {
+            dispatch(LoaderVisibility(false))
+            toast.error(data.error.error, {
+                position: 'top-center',
+                autoClose: 2000
+            })
+        }
+        else if (isSuccess) {
+            // console.log(data);
+            if (data.data.success) {
+                toast.success(data.data.message, {
+                    position: 'top-center',
+                    autoClose: 2000
+                });
+                dispatch(LoaderVisibility(false))
+                navigate('/')
+            }
+            else {
+                toast.warning(data.data.message, {
+                    position: 'top-center',
+                    autoClose: 2000
+                });
+                dispatch(LoaderVisibility(false))
+            }
+        }
+    }, [data])
+
+
     const formik = useFormik({
         initialValues: {
+            name: "",
             email: "",
-            password: ""
+            password: "",
+            confirmPassword: ""
         },
         validationSchema: validationSchema,
         onSubmit: (data, { resetForm }) => {
-            console.log(data);
-            localStorage.setItem('role', 'student')
-            localStorage.setItem('isauth', true)
-            navigate('/tutor-list')
+            registerUser(data);
             resetForm({});
         }
     })
