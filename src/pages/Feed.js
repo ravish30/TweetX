@@ -52,6 +52,7 @@ const Feed = () => {
 
     return (
         <>
+            <Box>
             <Box className={classes.root}>
                 <WriteModal />
                 <Box sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -78,6 +79,7 @@ const Feed = () => {
                         })
                     ) : <Typography color="primary" variant='h6' sx={{ textAlign: 'center' }}>Nothing to show in feed...</Typography>}
                 </Box>
+            </Box>
             </Box>
         </>
     )

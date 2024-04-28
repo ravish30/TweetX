@@ -188,7 +188,7 @@ function Login() {
                     <Grid item xs={12} md={7} sm={12}>
                         <Box className={classes.imageWrapper}>
                             <Box>
-                                <Typography variant="h4" sx={{ color: "#fff", textAlign: 'center', fontWeight: "bold", marginTop: "35px", marginBottom: "50px" }}>Welcome to the Best Messaging platform</Typography>
+                                <Typography variant="h4" sx={{ color: "#fff", textAlign: 'center', fontWeight: "bold", marginTop: "35px", marginBottom: "50px" }}>Welcome to the Best Social Media platform</Typography>
                                 <img src={require('../assets/tweetImage.png')} className={classes.mainImg} alt="" />
                             </Box>
                         </Box>

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '0px 2px 20px -1px rgb(0 0 0 / 5%), 0px 4px 5px 0px rgb(0 0 0 / 5%), 0px 1px 10px 0px rgb(0 0 0 / 5%) !important'
     },
     toolbar: {
-        backgroundColor: '#fff',
+        backgroundColor: '#6332a8',
         boxSizing: 'border-box',
     },
     nav: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     notActiveLink: {
         marginLeft: '25px !important',
         cursor: 'pointer',
-        color: 'rgba(0,0,0, 0.2)',
+        color: '#ffffff',
         textDecoration: 'none',
     },
     activeMobileLink: {
@@ -116,7 +116,7 @@ function Header() {
                     <Toolbar className={classes.toolbar}>
                         <Container className={classes.nav}>
                             <Box display="flex" alignItems="center" style={{ cursor: 'pointer' }}>
-                                <Typography variant="h6" color="secondary" style={{ marginLeft: 20, fontWeight: 'bolder' }}>
+                                <Typography variant="h5" color="primary" style={{ marginLeft: 20, fontWeight: 'bolder' }}>
                                     TweetX
                                 </Typography>
                             </Box>
