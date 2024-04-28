@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
     head: {
         fontWeight: '700 !important',
-        marginTop: "10px !important",
-        marginLeft: "55px !important"
+        paddingTop: "40px",
+        paddingLeft: "70px"
     },
     formWrapper: {
         width: "400px",
         margin: "auto",
-        marginTop: "50px",
+        marginTop: "80px",
         [theme.breakpoints.down('md')]: {
             width: "320px",
         }
@@ -46,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
         },
         [theme.breakpoints.down(550)]: {
             width: "100%",
-        }
+        },
+        marginTop: '40px'
     },
     forgotPswrd: {
         textDecoration: 'none',
@@ -147,12 +148,13 @@ function Register() {
 
     return (
         <>
+        <Box style={{ backgroundColor: '#6332a8' }}>
             <Box>
+            <Typography color="primary" variant="h3" className={classes.head}>TweetX</Typography>
                 <Grid container spacing={0}>
                     <Grid item xs={12} md={5} sm={12}>
                         <Box>
-                            <Typography color="secondary" variant="h5" className={classes.head}>TweetX</Typography>
-                            <Button color="primary" variant="outlined" style={{ fontWeight: 'bolder', textTransform: 'capitalize', marginLeft: "55px", marginTop: "30px" }} onClick={backToLogin}>Login</Button>
+                            <Button color="primary" variant="outlined" style={{ fontWeight: 'bolder', textTransform: 'capitalize', marginLeft: "75px", marginTop: "50px" }} onClick={backToLogin}>Login</Button>
                             <Box component="form" onSubmit={formik.handleSubmit} className={classes.formWrapper}>
                                 <Typography color="primary" variant='h4' style={{ marginBottom: "40px", fontWeight: 'bolder' }}>Create Account</Typography>
                                 <div>
@@ -222,12 +224,13 @@ function Register() {
                     <Grid item xs={12} md={7} sm={12}>
                         <Box className={classes.imageWrapper}>
                             <Box>
-                                <Typography variant="h5" sx={{ color: "#fff", textAlign: 'center', fontWeight: "bold", marginTop: "35px", marginBottom: "50px" }}>Welcome to the learning platform</Typography>
-                                <img src={require('../assets/pablo-sign-in.png')} className={classes.mainImg} alt="" />
+                                <Typography variant="h4" sx={{ color: "#fff", textAlign: 'center', fontWeight: "bold", marginTop: "35px", marginBottom: "50px" }}>Welcome to the Best Social Media platform</Typography>
+                                <img src={require('../assets/tweetImage.png')} className={classes.mainImg} alt="" />
                             </Box>
                         </Box>
                     </Grid>
                 </Grid>
+            </Box>
             </Box>
         </>
     );
